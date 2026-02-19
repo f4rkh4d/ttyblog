@@ -22,8 +22,6 @@ class Post:
 _CODE_RE = re.compile(r"`([^`]+)`")
 _BOLD_RE = re.compile(r"\*\*([^*]+)\*\*")
 _ITALIC_RE = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
-_LINK_TEXT_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
-_LINK_BARE_RE = re.compile(r"\[(https?://[^\]\s]+)\]")
 
 
 def _slugify(title: str) -> str:
@@ -33,10 +31,7 @@ def _slugify(title: str) -> str:
 
 
 def _inline(text: str) -> str:
-    # escape first, then reintroduce tags by operating on placeholders.
-    # simpler: escape, then run regexes on escaped text (safe since markers are ascii).
     out = html.escape(text)
-    # code first so its contents don't get italic/bold'd
     placeholders: list[str] = []
 
     def _stash(m: re.Match) -> str:
@@ -55,7 +50,6 @@ def _inline(text: str) -> str:
 
 
 def _render_body(lines: list[str]) -> str:
-    # split on blank lines into blocks.
     blocks: list[list[str]] = []
     current: list[str] = []
     for ln in lines:
@@ -76,7 +70,6 @@ def _render_body(lines: list[str]) -> str:
 
 
 def parse_text(text: str, slug: str = "post", source_path: str = "") -> Post:
-    # normalize newlines, strip trailing whitespace.
     raw_lines = text.replace("\r\n", "\n").split("\n")
     if not raw_lines or raw_lines[0].strip() == "":
         raise ValueError("empty post: need a title on line 1")
@@ -86,7 +79,6 @@ def parse_text(text: str, slug: str = "post", source_path: str = "") -> Post:
     date = ""
     tags: list[str] = []
 
-    # frontmatter: key: value until blank line. stops at first non key:value line.
     while idx < len(raw_lines):
         line = raw_lines[idx]
         if line.strip() == "":
@@ -119,7 +111,6 @@ def parse_text(text: str, slug: str = "post", source_path: str = "") -> Post:
 
 def parse_file(path: Path) -> Post:
     text = path.read_text(encoding="utf-8")
-    # if filename matches YYYY-MM-DD-slug.txt, use that slug and fallback date.
     stem = path.stem
     m = re.match(r"^(\d{4}-\d{2}-\d{2})-(.+)$", stem)
     if m:
