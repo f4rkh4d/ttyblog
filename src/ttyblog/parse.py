@@ -22,6 +22,8 @@ class Post:
 _CODE_RE = re.compile(r"`([^`]+)`")
 _BOLD_RE = re.compile(r"\*\*([^*]+)\*\*")
 _ITALIC_RE = re.compile(r"(?<!\*)\*([^*\n]+)\*(?!\*)")
+_LINK_TEXT_RE = re.compile(r"\[([^\]]+)\]\((https?://[^)\s]+)\)")
+_LINK_BARE_RE = re.compile(r"\[(https?://[^\]\s]+)\]")
 
 
 def _slugify(title: str) -> str:
@@ -31,6 +33,7 @@ def _slugify(title: str) -> str:
 
 
 def _inline(text: str) -> str:
+    # escape first, then reintroduce tags by operating on placeholders.
     out = html.escape(text)
     placeholders: list[str] = []
 
@@ -39,6 +42,12 @@ def _inline(text: str) -> str:
         return f"\x00{len(placeholders) - 1}\x00"
 
     out = _CODE_RE.sub(_stash, out)
+    out = _LINK_TEXT_RE.sub(
+        lambda m: f'<a href="{m.group(2)}">{m.group(1)}</a>', out
+    )
+    out = _LINK_BARE_RE.sub(
+        lambda m: f'<a href="{m.group(1)}">{m.group(1)}</a>', out
+    )
     out = _BOLD_RE.sub(r"<strong>\1</strong>", out)
     out = _ITALIC_RE.sub(r"<em>\1</em>", out)
 
@@ -50,6 +59,7 @@ def _inline(text: str) -> str:
 
 
 def _render_body(lines: list[str]) -> str:
+    # split on blank lines into blocks.
     blocks: list[list[str]] = []
     current: list[str] = []
     for ln in lines:
@@ -64,8 +74,14 @@ def _render_body(lines: list[str]) -> str:
 
     html_parts: list[str] = []
     for block in blocks:
-        joined = " ".join(l.strip() for l in block)
-        html_parts.append(f"<p>{_inline(joined)}</p>")
+        if all(l.lstrip().startswith("- ") for l in block):
+            items = "".join(
+                f"    <li>{_inline(l.lstrip()[2:])}</li>\n" for l in block
+            )
+            html_parts.append(f"<ul>\n{items}</ul>")
+        else:
+            joined = " ".join(l.strip() for l in block)
+            html_parts.append(f"<p>{_inline(joined)}</p>")
     return "\n".join(html_parts)
 
 
