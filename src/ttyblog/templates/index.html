@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ site.title }}{% endblock %}
+{% block content %}
+{% if posts %}
+<ul class="posts">
+  {% for p in posts %}
+  <li>
+    <span class="date">{{ p.date or "----------" }}</span>
+    <a href="/posts/{{ p.slug }}.html">{{ p.title }}</a>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>no posts yet. try <code>ttyblog new "first"</code>.</p>
+{% endif %}
+{% endblock %}

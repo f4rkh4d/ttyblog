@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ site.title }}{% endblock %}</title>
+<style>
+  :root { --fg: #1a1a1a; --muted: #777; --accent: #b03a2e; --paper: #f6efe3; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.6;
+    color: var(--fg);
+    background: var(--paper);
+  }
+  main { max-width: 36rem; margin: 3rem auto; padding: 0 1.25rem; }
+  a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { background: var(--accent); color: var(--paper); text-decoration: none; }
+  h1, h2, h3 { font-weight: 700; line-height: 1.25; }
+  header.site { border-bottom: 1px solid #0002; padding-bottom: 1rem; margin-bottom: 2rem; }
+  header.site a { color: var(--fg); text-decoration: none; }
+  header.site .title { font-size: 1.1rem; font-weight: 700; }
+  header.site .author { color: var(--muted); font-size: 0.9rem; }
+  ul.posts { list-style: none; padding: 0; }
+  ul.posts li { padding: 0.35rem 0; display: flex; gap: 1rem; }
+  ul.posts .date { color: var(--muted); font-family: ui-monospace, Menlo, monospace; font-size: 0.85rem; min-width: 6.5rem; padding-top: 0.25rem; }
+  article .meta { color: var(--muted); font-size: 0.85rem; font-family: ui-monospace, Menlo, monospace; margin-bottom: 1.5rem; }
+  article .meta .tag { margin-right: 0.5rem; }
+  pre, code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.92em; }
+  code { background: #0001; padding: 0.1em 0.3em; border-radius: 3px; }
+  footer { margin-top: 4rem; padding-top: 1rem; border-top: 1px solid #0002; color: var(--muted); font-size: 0.85rem; }
+</style>
+</head>
+<body>
+<main>
+  <header class="site">
+    <div class="title"><a href="/">{{ site.title }}</a></div>
+    <div class="author">{{ site.author }}</div>
+  </header>
+  {% block content %}{% endblock %}
+  <footer>built with ttyblog</footer>
+</main>
+</body>
+</html>

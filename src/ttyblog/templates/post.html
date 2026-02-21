@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — {{ site.title }}{% endblock %}
+{% block content %}
+<article>
+  <h1>{{ post.title }}</h1>
+  <div class="meta">
+    {{ post.date or "undated" }}
+    {% for t in post.tags %}<span class="tag">#{{ t }}</span>{% endfor %}
+  </div>
+  {{ post.body_html|safe }}
+  <p style="margin-top:3rem"><a href="/">&larr; back</a></p>
+</article>
+{% endblock %}
