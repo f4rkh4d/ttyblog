@@ -1,5 +1,7 @@
 # ttyblog
 
+
+![demo](docs/hero.gif)
 blog engine. reads .txt. no react, no rss library, no 37-step config.
 
 ## install
