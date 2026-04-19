@@ -62,3 +62,9 @@ markdown it is not. the grammar is tiny. if you want footnotes, tables, headings
 ## license
 
 MIT.
+
+## why .txt and not .md
+
+markdown is fine for a lot of things but a blog engine that parses it is one footnote-syntax-extension away from a 2000-line dependency tree. plain text + a single `<pre>` wrapper renders the same thought on every device, every reader, every year. if you need a list, indent two spaces. if you need a link, paste the URL.
+
+i ran my old blog on hugo for two years and once a quarter something would break — a theme update, a markdown engine swap, a config schema. ttyblog has no themes, no engines, no configs. you write a .txt and it shows up.
